@@ -4,7 +4,7 @@ export function renderDocument(editor, document, assets) {
   revokeAssetUrls(editor);
   editor.innerHTML = '';
   const fragment = documentFragment();
-  for (const block of document.blocks) fragment.appendChild(renderBlock(block, assets));
+  for (const block of document.blocks) fragment.appendChild(renderBlock(block, assets, document.mode));
   editor.appendChild(fragment);
 }
 
@@ -52,13 +52,13 @@ export function syncDocumentFromDom(editor, document) {
   return document;
 }
 
-function renderBlock(block, assets) {
+function renderBlock(block, assets, mode) {
   let element;
   if (block.type === 'heading') {
     element = document.createElement(`h${Math.max(1, Math.min(6, block.level || 1))}`);
     element.textContent = block.text;
   } else if (block.type === 'table') {
-    element = renderTable(block);
+    element = renderTable(block, mode);
   } else if (block.type === 'image') {
     element = renderImage(block, assets);
   } else if (block.type === 'unsupported') {
@@ -75,8 +75,14 @@ function renderBlock(block, assets) {
   return element;
 }
 
-function renderTable(block) {
+function renderTable(block, mode) {
   const table = document.createElement('table');
+  const locked = mode === 'form';
+  if (locked) {
+    table.contentEditable = 'false';
+    table.dataset.structureLocked = 'true';
+    table.title = '양식 모드: 표 구조는 잠겨 있고 셀 내용만 편집합니다.';
+  }
   const tbody = document.createElement('tbody');
   for (const row of block.rows || []) {
     const tr = document.createElement('tr');
@@ -86,6 +92,7 @@ function renderTable(block) {
       td.colSpan = cell.colSpan || 1;
       td.rowSpan = cell.rowSpan || 1;
       td.innerText = cell.text || '';
+      if (locked) td.contentEditable = 'true';
       tr.appendChild(td);
     }
     tbody.appendChild(tr);

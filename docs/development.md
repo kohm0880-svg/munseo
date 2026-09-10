@@ -12,7 +12,7 @@ git commit -m "feat: ..."
 git push
 ```
 
-Render PR Preview를 사용하면 `main` 배포를 건드리지 않고 브랜치 결과를 먼저 확인할 수 있습니다.
+초기에는 Render PR Preview를 꺼 둡니다. 필요할 때만 활성화해 불필요한 빌드 사용량을 줄입니다.
 
 ## 구조를 바꿀 때
 

@@ -1,7 +1,7 @@
 import { migrateDocument } from '../../core/src/migrations.js';
 
-const INDEX_KEY = 'liberator:documents:index:v1';
-const keyFor = (id) => `liberator:document:${id}`;
+const INDEX_KEY = 'munseo:documents:index:v1';
+const keyFor = (id) => `munseo:document:${id}`;
 
 export function createLocalStorageStore(storage = globalThis.localStorage) {
   return {

@@ -1,6 +1,6 @@
 import { paragraph, table, touchDocument } from '../../../packages/core/src/index.js';
 import { canImport, importDocumentFile } from '../../../packages/formats/src/index.js';
-import { PAPER_PRESETS } from '../../../packages/layout/src/index.js';
+import { PAPER_PRESETS, fitProfileToPageTarget } from '../../../packages/layout/src/index.js';
 import { createLocalStorageStore } from '../../../packages/storage/src/index.js';
 import { renderDocument, syncDocumentFromDom } from './dom-document-adapter.js';
 import { runInlineCommand } from './formatting.js';
@@ -53,6 +53,7 @@ function bindEvents() {
   $('portraitBtn').addEventListener('click', () => updateProfile({ orientation: 'portrait' }));
   $('landscapeBtn').addEventListener('click', () => updateProfile({ orientation: 'landscape' }));
   $('densitySlider').addEventListener('input', (event) => updateProfile({ density: Number(event.target.value) }));
+  $('fitPagesBtn').addEventListener('click', fitToTargetPages);
 
   $('addParagraphBtn').addEventListener('click', () => {
     syncBeforeMutation();
@@ -197,6 +198,51 @@ function updateProfile(patch) {
   setOrientationUi(state.document.printProfile.orientation);
   markDirty();
   refreshPagination();
+}
+
+async function fitToTargetPages() {
+  if (state.view !== 'paper') setView('paper');
+  syncBeforeMutation();
+  const target = Math.max(1, Math.floor(Number($('targetPages').value) || 1));
+  $('fitPagesBtn').disabled = true;
+  const originalProfile = structuredClone(state.document.printProfile);
+
+  try {
+    const result = await fitProfileToPageTarget(originalProfile, target, measurePagesForProfile);
+    if (!result.ok) {
+      applyPrintProfile(originalProfile);
+      return toast(`간격과 여백만으로는 ${target}쪽에 맞추기 어렵습니다.`);
+    }
+    if (!result.changed) return toast(`이미 ${target}쪽 이내입니다.`);
+
+    setPrintProfile(state, result.profile);
+    $('densitySlider').value = result.profile.density;
+    applyPrintProfile(result.profile);
+    markDirty();
+    refreshPagination();
+    const marginChanged = result.changes.some((change) => change.field.startsWith('margin'));
+    toast(`${result.pages}쪽에 맞췄습니다 · 글자 크기 변경 없음${marginChanged ? ' · 상하여백 일부 조정' : ''}`);
+  } finally {
+    $('fitPagesBtn').disabled = false;
+  }
+}
+
+async function measurePagesForProfile(profile) {
+  applyPrintProfile(profile);
+  await nextFrame();
+  const probe = document.createElement('div');
+  probe.style.cssText = `position:absolute;visibility:hidden;width:${getComputedStyle(document.documentElement).getPropertyValue('--paper-width')};height:1mm;`;
+  document.body.appendChild(probe);
+  const mmPx = probe.getBoundingClientRect().height;
+  probe.remove();
+  const paper = PAPER_PRESETS[profile.paper] || PAPER_PRESETS.A4;
+  const heightMm = profile.orientation === 'landscape' ? paper.widthMm : paper.heightMm;
+  const pageHeightPx = heightMm * mmPx;
+  return Math.max(1, Math.ceil(Math.max(editor.scrollHeight, pageHeightPx) / pageHeightPx));
+}
+
+function nextFrame() {
+  return new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
 }
 
 function setOrientationUi(orientation) {

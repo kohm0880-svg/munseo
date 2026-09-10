@@ -1,4 +1,4 @@
-# Liberator Document Format v1
+# Munseo Document Format v1
 
 자체 문서 포맷은 JSON이며 `schemaVersion`으로 버전을 관리합니다.
 

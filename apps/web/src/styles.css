@@ -115,3 +115,12 @@ button { cursor: pointer; }
 .editor figure { margin:16px 0 22px; }
 .editor figure img { display:block; max-width:100%; height:auto; margin:auto; }
 button:disabled { cursor:not-allowed; opacity:.45; }
+
+.page-fit { margin-top:12px; padding-top:12px; border-top:1px solid #e5e5e5; }
+.page-fit > label { display:block; font-size:12px; font-weight:800; margin-bottom:7px; }
+.page-fit > div { display:flex; gap:6px; }
+.page-fit input { width:70px; min-width:0; border:1px solid #d8d8d8; border-radius:9px; padding:8px; background:white; }
+.page-fit button { flex:1; padding:8px 10px; }
+.page-fit small { display:block; color:#888; font-size:10px; line-height:1.45; margin-top:7px; }
+.form-mode .editor table[data-structure-locked="true"] { position:relative; outline:2px solid rgba(30,90,150,.12); }
+.form-mode .editor table[data-structure-locked="true"] td { cursor:text; }
