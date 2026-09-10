@@ -111,7 +111,8 @@ function bindEvents() {
 
 function chooseFile(file) {
   if (!file) return;
-  if (!canImport(file.name)) return toast('현재는 HWP/HWPX 파일만 지원합니다.');
+  if (/\.hwp$/i.test(file.name)) return toast('HWP는 native parser 재구성 중이라 현재 편집기 연결을 잠시 꺼뒀습니다.');
+  if (!canImport(file.name)) return toast('현재 편집 화면은 HWPX만 연결되어 있습니다.');
   state.pendingFile = file;
   modePicker.classList.remove('hidden');
 }
