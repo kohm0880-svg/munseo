@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="HWP/HWPX를 설치 없이 열고 우리 방식으로 편집하는 로컬 우선 문서 편집기 프로토타입" />
+  <meta name="description" content="문서 형식에 종속되지 않는 로컬 우선 문서 편집기 프로토타입" />
   <title>Munseo — 문서 편집기 Prototype</title>
   <link rel="stylesheet" href="./apps/web/src/styles.css" />
 </head>
@@ -11,10 +11,10 @@
   <header class="topbar">
     <div class="brand">
       <span class="brand-mark">M</span>
-      <div><strong>Munseo</strong><small>HWP/HWPX는 입구, 문서는 우리 방식으로.</small></div>
+      <div><strong>Munseo</strong><small>문서는 우리 방식으로.</small></div>
     </div>
     <div class="top-actions">
-      <button id="openBtn" class="button secondary">HWP/HWPX 열기</button>
+      <button id="openBtn" class="button secondary">HWPX 열기</button>
       <button id="saveLocalBtn" class="button secondary">임시 저장</button>
       <button id="printBtn" class="button">PDF / 인쇄</button>
     </div>
@@ -23,12 +23,13 @@
   <main>
     <section id="landing" class="landing">
       <label id="dropzone" class="dropzone" for="fileInput">
-        <input id="fileInput" type="file" accept=".hwp,.hwpx,application/x-hwp,application/zip" hidden />
+        <input id="fileInput" type="file" accept=".hwpx,application/zip" hidden />
         <div class="drop-icon">↧</div>
-        <h1>HWP 또는 HWPX 파일을 놓으세요</h1>
+        <h1>HWPX 파일을 놓으세요</h1>
         <p>설치 없음 · 로그인 없음 · 문서 서버 업로드 없음</p>
         <span class="button">파일 선택</span>
       </label>
+      <p class="side-help">HWP 5.x는 HWPX 우회 변환을 폐기하고 native parser를 다시 만드는 중입니다.</p>
       <button id="demoBtn" class="text-button">파일 없이 편집기 데모 보기</button>
     </section>
 
