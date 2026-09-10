@@ -15,7 +15,12 @@ export function applyPrintProfile(profile) {
 }
 
 export function updatePageGuides({ editor, pageGuides, paperShell, pageEstimate, profile, view }) {
-  if (view !== 'paper') return;
+  if (view !== 'paper') {
+    pageGuides.innerHTML = '';
+    paperShell.style.minHeight = '';
+    if (pageEstimate) pageEstimate.textContent = '—';
+    return;
+  }
   requestAnimationFrame(() => {
     pageGuides.innerHTML = '';
     const { heightMm } = getPaperMetrics(profile);
