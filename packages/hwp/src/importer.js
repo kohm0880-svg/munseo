@@ -1,4 +1,5 @@
 import { importHwpx } from '../../hwpx/src/importer.js';
+import { applyHwpLayoutMetadata, extractHwpLayoutMetadata } from './layout-metadata.js';
 
 const HWP_BRIDGE_URL = 'https://cdn.jsdelivr.net/npm/@ssabrojs/hwpxjs@0.4.0/dist/browser/hwpxjs.browser.mjs';
 let defaultBridgePromise = null;
@@ -27,6 +28,10 @@ export async function importHwp(file, { mode = 'general', bridgeLoader = loadDef
   if (detected && detected !== 'hwp') throw new Error('HWP 5.x 파일로 인식되지 않습니다. 파일 형식을 확인해주세요.');
   if (typeof bridge.hwpToHwpx !== 'function') throw new Error('HWP 변환 모듈의 hwpToHwpx 기능을 찾지 못했습니다.');
 
+  // 내용 변환과 별개로 원본 HWP에서 페이지/표 기하를 직접 읽습니다.
+  // 외부 변환기가 이 정보를 생략해도 양식의 폭과 방향을 유지하기 위한 경계입니다.
+  const layoutPromise = extractHwpLayoutMetadata(bytes);
+
   let hwpxBytes;
   try {
     hwpxBytes = await bridge.hwpToHwpx(bytes, {
@@ -39,6 +44,7 @@ export async function importHwp(file, { mode = 'general', bridgeLoader = loadDef
 
   const converted = memoryFile(`${file.name.replace(/\.hwp$/i, '')}.hwpx`, hwpxBytes);
   const result = await importHwpx(converted, { mode });
+  applyHwpLayoutMetadata(result, await layoutPromise);
 
   result.originalFile = file;
   result.document.source = {
@@ -48,7 +54,7 @@ export async function importHwp(file, { mode = 'general', bridgeLoader = loadDef
     bridge: '@ssabrojs/hwpxjs@0.4.0'
   };
   result.warnings = [
-    'HWP 5.x를 브라우저에서 HWPX 구조로 정규화한 뒤 Munseo 문서로 가져왔습니다.',
+    'HWP 5.x의 내용은 브라우저에서 HWPX 구조로 정규화하고, 페이지/표 기하는 원본 HWP에서 별도로 복원했습니다.',
     ...(result.warnings || [])
   ];
   return result;
