@@ -111,7 +111,7 @@ function bindEvents() {
 
 function chooseFile(file) {
   if (!file) return;
-  if (!canImport(file.name)) return toast('현재는 HWPX 파일만 지원합니다.');
+  if (!canImport(file.name)) return toast('현재는 HWP/HWPX 파일만 지원합니다.');
   state.pendingFile = file;
   modePicker.classList.remove('hidden');
 }
@@ -120,7 +120,7 @@ async function openFile(file, mode) {
   state.pendingFile = null;
   modePicker.classList.add('hidden');
   showWorkspace();
-  editor.innerHTML = '<p>HWPX를 읽는 중...</p>';
+  editor.innerHTML = '<p>문서를 읽는 중...</p>';
 
   try {
     const result = await importDocumentFile(file, { mode });
@@ -129,11 +129,12 @@ async function openFile(file, mode) {
     state.sourceEntries = result.sourceEntries;
     state.originalFile = result.originalFile;
     renderCurrentDocument();
+    setView(mode === 'form' ? 'paper' : 'free');
     toast(`문단 ${result.stats.paragraphCount} · 표 ${result.stats.tableCount} · 이미지 ${result.stats.imageCount} 불러옴`);
   } catch (error) {
     console.error(error);
     editor.innerHTML = `<div class="unsupported-block">열지 못했습니다: ${escapeHtml(error.message)}</div>`;
-    toast('HWPX 열기에 실패했습니다.');
+    toast('문서 열기에 실패했습니다.');
   }
 }
 
@@ -144,6 +145,7 @@ function openDemo() {
   state.originalFile = null;
   showWorkspace();
   renderCurrentDocument();
+  setView('free');
 }
 
 function showWorkspace() {
