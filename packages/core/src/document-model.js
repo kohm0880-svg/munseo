@@ -7,7 +7,6 @@ export function createId(prefix = 'node') {
   return `${prefix}_${Date.now().toString(36)}_${sequence.toString(36)}`;
 }
 
-
 export function createDocument({ title = '새 문서', mode = 'general', source = null, blocks = [] } = {}) {
   return {
     schemaVersion: DOCUMENT_SCHEMA_VERSION,
@@ -45,12 +44,13 @@ export function table(rows = [], attrs = {}) {
     id: createId('tbl'),
     type: 'table',
     rows: rows.map((row) => row.map((cell) => ({
-      id: createId('cell'),
+      id: typeof cell === 'string' ? createId('cell') : (cell.id || createId('cell')),
       text: typeof cell === 'string' ? cell : (cell.text ?? ''),
       colSpan: typeof cell === 'string' ? 1 : (cell.colSpan ?? 1),
-      rowSpan: typeof cell === 'string' ? 1 : (cell.rowSpan ?? 1)
+      rowSpan: typeof cell === 'string' ? 1 : (cell.rowSpan ?? 1),
+      attrs: typeof cell === 'string' ? {} : structuredClone(cell.attrs ?? {})
     }))),
-    attrs
+    attrs: structuredClone(attrs ?? {})
   };
 }
 
