@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="HWPX를 설치 없이 열고 우리 방식으로 편집하는 로컬 우선 문서 편집기 프로토타입" />
+  <title>Munseo — 문서 편집기 Prototype</title>
+  <link rel="stylesheet" href="./apps/web/src/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark">M</span>
+      <div><strong>Munseo</strong><small>HWPX는 입구, 문서는 우리 방식으로.</small></div>
+    </div>
+    <div class="top-actions">
+      <button id="openBtn" class="button secondary">HWPX 열기</button>
+      <button id="saveLocalBtn" class="button secondary">임시 저장</button>
+      <button id="printBtn" class="button">PDF / 인쇄</button>
+    </div>
+  </header>
+
+  <main>
+    <section id="landing" class="landing">
+      <label id="dropzone" class="dropzone" for="fileInput">
+        <input id="fileInput" type="file" accept=".hwpx,application/zip" hidden />
+        <div class="drop-icon">↧</div>
+        <h1>HWPX 파일을 놓으세요</h1>
+        <p>설치 없음 · 로그인 없음 · 서버 업로드 없음</p>
+        <span class="button">파일 선택</span>
+      </label>
+      <button id="demoBtn" class="text-button">파일 없이 편집기 데모 보기</button>
+    </section>
+
+    <section id="modePicker" class="modal-backdrop hidden" aria-modal="true" role="dialog">
+      <div class="modal">
+        <span class="eyebrow">문서 열기</span>
+        <h2>어떻게 편집할까요?</h2>
+        <div class="mode-grid">
+          <button class="mode-card" data-mode="general"><strong>일반 문서</strong><span>보고서 · 회의록 · 과제</span><p>내용 흐름을 우선하고 페이지는 필요할 때 적용합니다.</p></button>
+          <button class="mode-card" data-mode="form"><strong>양식 문서</strong><span>신청서 · 지원서 · 공문 서식</span><p>표와 항목 구조를 최대한 유지하고 입력을 편하게 합니다.</p></button>
+        </div>
+      </div>
+    </section>
+
+    <section id="workspace" class="workspace hidden">
+      <aside class="sidebar">
+        <div class="sidebar-section">
+          <span class="eyebrow">문서</span>
+          <input id="titleInput" class="title-input" value="새 문서" aria-label="문서 제목" />
+          <div id="sourceBadge" class="source-badge">새 문서</div>
+        </div>
+
+        <div class="sidebar-section">
+          <span class="eyebrow">편집 모드</span>
+          <div class="segmented"><button id="generalModeBtn" data-doc-mode="general">일반</button><button id="formModeBtn" data-doc-mode="form">양식</button></div>
+          <p id="modeHelp" class="side-help"></p>
+        </div>
+
+        <div class="sidebar-section">
+          <span class="eyebrow">보기</span>
+          <div class="segmented vertical"><button data-view="free" class="active">자유 문서</button><button data-view="paper">종이 보기</button></div>
+        </div>
+
+        <div id="paperControls" class="sidebar-section muted-section hidden">
+          <span class="eyebrow">출력 용지</span>
+          <select id="paperSize"></select>
+          <div class="segmented"><button id="portraitBtn" class="active">세로</button><button id="landscapeBtn">가로</button></div>
+          <label class="range-label"><span>문서 여유</span><input id="densitySlider" type="range" min="0" max="100" value="55" /><small>빽빽하게 ↔ 여유롭게</small></label>
+          <div class="page-estimate"><span>예상</span><strong id="pageEstimate">1쪽</strong></div>
+        </div>
+
+        <div class="sidebar-section">
+          <button id="addParagraphBtn" class="button full secondary">+ 문단 추가</button>
+          <button id="addTableBtn" class="button full secondary">+ 2×2 표 추가</button>
+        </div>
+      </aside>
+
+      <section class="editor-area">
+        <div class="editor-toolbar">
+          <div><button data-command="bold"><b>B</b></button><button data-command="italic"><i>I</i></button><button data-command="underline"><u>U</u></button></div>
+          <div class="status-row"><span id="modeStatus">일반 문서</span><span id="saveStatus">로컬 편집</span></div>
+        </div>
+
+        <div id="paperShell" class="paper-shell free-view">
+          <article id="editor" class="editor" contenteditable="true" spellcheck="true"></article>
+          <div id="pageGuides" class="page-guides" aria-hidden="true"></div>
+        </div>
+
+        <div id="spacingPopover" class="spacing-popover hidden">
+          <strong>문단 사이 공간</strong>
+          <input id="spacingRange" type="range" min="0" max="48" value="12" />
+          <span id="spacingValue">12px</span>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <div id="toast" class="toast hidden"></div>
+  <script type="module" src="./apps/web/src/main.js"></script>
+</body>
+</html>
