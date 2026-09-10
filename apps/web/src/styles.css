@@ -80,10 +80,17 @@ button { cursor: pointer; }
 .editor h2 { margin:34px 0 15px; }
 .editor p { margin:0 0 var(--para-gap); }
 .editor p:hover { background:rgba(0,0,0,.025); border-radius:4px; }
-.editor table { width:100%; border-collapse:collapse; margin:16px 0 22px; table-layout:auto; }
+.editor table { width:100%; max-width:100%; border-collapse:collapse; margin:16px 0 22px; table-layout:auto; }
 .editor table[data-source-geometry="true"] { table-layout:fixed; margin:1mm 0 4mm; }
 .editor table[data-source-geometry="true"] td,
-.editor table[data-source-geometry="true"] th { min-width:0; word-break:normal; overflow-wrap:normal; }
+.editor table[data-source-geometry="true"] th {
+  min-width:0;
+  max-width:0;
+  overflow:hidden;
+  overflow-wrap:anywhere;
+  word-break:normal;
+  white-space:pre-wrap;
+}
 .editor td, .editor th { border:1px solid #aaa; padding:9px 10px; min-width:46px; vertical-align:top; }
 .form-mode .editor table { outline:2px solid rgba(0,0,0,.04); }
 .form-mode .editor td { background:rgba(248,248,246,.7); }
