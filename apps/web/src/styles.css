@@ -81,6 +81,9 @@ button { cursor: pointer; }
 .editor p { margin:0 0 var(--para-gap); }
 .editor p:hover { background:rgba(0,0,0,.025); border-radius:4px; }
 .editor table { width:100%; border-collapse:collapse; margin:16px 0 22px; table-layout:auto; }
+.editor table[data-source-geometry="true"] { table-layout:fixed; margin:1mm 0 4mm; }
+.editor table[data-source-geometry="true"] td,
+.editor table[data-source-geometry="true"] th { min-width:0; word-break:normal; overflow-wrap:normal; }
 .editor td, .editor th { border:1px solid #aaa; padding:9px 10px; min-width:46px; vertical-align:top; }
 .form-mode .editor table { outline:2px solid rgba(0,0,0,.04); }
 .form-mode .editor td { background:rgba(248,248,246,.7); }
@@ -108,8 +111,12 @@ button { cursor: pointer; }
   body { background:white; }
   .workspace { display:block !important; }
   .editor-area { display:block; }
-  .paper-shell, .paper-shell.free-view, .paper-shell.paper-view { width:auto !important; margin:0; box-shadow:none; background:white; }
-  .editor { padding:0 !important; min-height:0; }
+  .paper-shell, .paper-shell.free-view, .paper-shell.paper-view {
+    width:auto !important; margin:0; box-shadow:none; background:white;
+    min-height:0 !important; height:auto !important;
+  }
+  .editor { padding:0 !important; min-height:0 !important; }
+  .editor table[data-keep-together="true"] { break-inside:avoid; page-break-inside:avoid; }
 }
 
 .editor figure { margin:16px 0 22px; }
