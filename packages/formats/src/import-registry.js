@@ -1,13 +1,6 @@
-import { importHwp } from '../../hwp/src/index.js';
 import { importHwpx } from '../../hwpx/src/index.js';
 
 const IMPORTERS = [
-  {
-    id: 'hwp',
-    extensions: ['.hwp'],
-    requiresModeSelection: true,
-    importFile: importHwp
-  },
   {
     id: 'hwpx',
     extensions: ['.hwpx'],
